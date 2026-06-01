@@ -11,13 +11,13 @@ app.use(express.json());
 const SPREADSHEET_ID = "ВАШ_ID_ГУГЛ_ТАБЛИЦЫ";
 
 // 2. Подключаем файл ключа сервисного аккаунта Google (скачанный из Google Cloud)
-const client = new google.auth.JWT(
-  null,
-  path.join(__dirname, "google-key.json"), // файл ключа должен лежать в этой же папке
-  null,
-  ["https://www.googleapis.com/auth/spreadsheets"]
-);
+// 2. Подключаем файл ключа сервисного аккаунта Google
+const keyPath = path.join(__dirname, "google-key.json");
+const keys = require(keyPath);
 
+const client = new google.auth.JWT(keys.client_email, null, keys.private_key, [
+  "https://www.googleapis.com/auth/spreadsheets",
+]);
 app.post("/api/order", async (req, res) => {
   const { market, customer, payment, items } = req.body;
   const date = new Date().toLocaleDateString("ru-RU", {
